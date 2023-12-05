@@ -3,6 +3,8 @@ import dataclasses
 import string
 from typing import List, Tuple
 
+import sys
+
 @dataclasses.dataclass
 class Point:
     x : int
@@ -76,19 +78,38 @@ with open('Problem 3/input.txt', 'r') as f:
         if num is not None:
             numbers.append(num)
 
-touching_nums = []
-for num in numbers:
+if sys.argv[1] == 'part1':
+    touching_nums = []
+    for num in numbers:
+        for sym in symbols:
+            if num.location.touches(sym.location):
+                #print(f'{num} touches {sym}')
+                touching_nums.append(num)
+                break
+        # else:
+        #     print(f"{num} didn't touch anything")
+
+    #print("Found touching numbers:")
+    # for x in touching_nums:
+    #     print(x)
+
+    result = sum(int(x) for x in touching_nums)
+    print(f'Found result: {result}')
+else:
+    gears = []
     for sym in symbols:
-        if num.location.touches(sym.location):
-            #print(f'{num} touches {sym}')
-            touching_nums.append(num)
-            break
-    # else:
-    #     print(f"{num} didn't touch anything")
+        if sym.value == '*':
+            adj = []
+            for num in numbers:
+                if num.location.touches(sym.location):
+                    adj.append(num)
+            if len(adj) == 2:
+                gears.append((sym, *adj))
+    print('Found gears: ')
+    total = 0
+    for gear in gears:
+        print(gear)
+        total += int(gear[1]) * int(gear[2])
+    print(f'Total ratio: {total}')
 
-#print("Found touching numbers:")
-# for x in touching_nums:
-#     print(x)
-
-result = sum(int(x) for x in touching_nums)
-print(f'Found result: {result}')
+    
